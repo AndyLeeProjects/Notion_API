@@ -14,6 +14,7 @@ from secret import secret
 import pandas as pd
 import os
 import mysql.connector as MC
+import json
 
 
 
@@ -22,16 +23,50 @@ class connect_NotionDB:
     def __init__(self, database_id, token_key):
         self.database_id = database_id
         self.token_key = token_key
+        self.headers = headers = {
+            "Authorization": "Bearer " + self.token_key,
+            "Content-Type": "application/json",
+            "Notion-Version": "2021-05-13"
+        }
+
+
 
     def query_databases(self):
         database_url = 'https://api.notion.com/v1/databases/' + self.database_id + "/query"
-        response = requests.post(database_url, headers={"Authorization": self.token_key, "Notion-Version":'2021-05-13'})
+        response = requests.post(database_url, headers=self.headers)
         if response.status_code != 200:
             raise ValueError(f'Response Status: {response.status_code}')
         else:
             self.json = response.json()
         return self.json
             
+    def get_all_pages(self):
+        readUrl = f"https://api.notion.com/v1/databases/{self.database_id}/query"
+        next_cur = self.json['next_cursor']
+        try:
+            page_num = 1
+            while self.json['has_more']:
+                print(f"reading page number {page_num}...")
+                print()
+                
+                # Sets a new starting point 
+                self.json['start_cursor'] = next_cur
+                self.json['next_cursor'] = None
+                data_hidden = json.dumps(self.json)
+                # Gets the next 100 results
+                data_hidden = requests.post(
+                    readUrl, headers=self.headers, data=data_hidden).json()
+                
+                self.json["results"] += data_hidden["results"]
+                next_cur = data_hidden['next_cursor']
+                page_num += 1
+                if next_cur is None:
+                    break
+        except:
+            pass
+        return self.json
+    
+    
     def get_projects_titles(self):
         most_properties = [len(self.json['results'][i]['properties'])
                                 for i in range(len(self.json["results"]))]
@@ -39,8 +74,9 @@ class connect_NotionDB:
         # Find the index with the maximum length
         self.max_ind = np.argmax(most_properties)
         self.titles = list(self.json["results"][self.max_ind]["properties"].keys())
-        return self.titles
-    
+        return self.titles        
+        
+        
     def clean_data(self):
         
         data = {}
@@ -48,56 +84,81 @@ class connect_NotionDB:
             
             # Get type of the variable and use it as a filtering tool
             title_type = self.json['results'][self.max_ind]['properties'][title]['type']
-                        
-            data[title] = [self.json['results'][i]['properties'][title][title_type]
-                           for i in range(len(self.json['results']))]
+            
+            temp = []
+            for i in range(len(self.json['results'])):
+                try:
+                    val = self.json['results'][i]['properties'][title][title_type]
+                    val = np.nan if val == [] else val
+                    temp.append(val)
+                except:
+                    temp.append(np.nan)
+            data[title] = temp
+        
+        
         
         for key in data.keys():
             row_num = len(data[key])
-            try:
-                data[key] = [data[key][i][0]['name'] for i in range(row_num)]
-            except:
-                pass
             
-            try:
-                data[key] = [data[key][i][0]['text']['content'] for i in range(row_num)]
-            except:
-                pass
+            data[key] = [connect_NotionDB.extract_nested_elements(data, key, ind) 
+                         for ind in range(row_num)]
             
-            try:
-                data[key] = [data[key][i]['number'] for i in range(row_num)]
-            except:
-                pass
-            
-            #try:
-            #    data[key] = [[data[key][i][j]['name']] for i in range(row_num) for j in range(data[key][i])]
-            #except:
-            #    pass
             
         self.data = data
         return data
+
+    def extract_nested_elements(data,key, ind):
+        try:
+            nested_type = data[key][ind][0]['text']['content']
+            return nested_type
+        except:
+            pass
+        
+        try:
+            nested_type = data[key][ind]['number']
+            return nested_type
+        except:
+            pass
+        
+        try: 
+            nested_type = data[key][ind]['name']
+            return nested_type
+        except:
+            pass
+        
+        try:
+            nested_type = data[key][ind][0]['name']
+            return nested_type
+        except:
+            pass
+        
+        try:
+            nested_type = data[key][ind]['start']
+            return nested_type
+        except:
+            pass
+        
+        try:
+            nested_type = data[key][ind]
+            return nested_type
+        except:
+            pass
+        
+
     
     def retrieve_data(self):
         Notion = connect_NotionDB(self.database_id, self.token_key)
-        db = Notion.query_databases()
+        jsn = Notion.query_databases()
+        jsn_all = Notion.get_all_pages()
         titles = Notion.get_projects_titles()
         data = pd.DataFrame(Notion.clean_data())
         
         return data
     
     
-database_id = "b8844373ea4240929bac6e3d6044cb89"
+database_id = secret.vocab('databaseId')
 token_key = secret.notion_API("token")
 
 Notion = connect_NotionDB(database_id, token_key)
-data = Notion.query_databases()
-sample = data['results'][0]['properties']
-titles = Notion.get_projects_titles()
-dat = Notion.clean_data()
 data = Notion.retrieve_data()
-
-types = []
-for k in sample.keys():
-    if sample[k]['type'] not in types:    
-        types.append(sample[k]['type'])
 
