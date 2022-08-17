@@ -225,10 +225,6 @@ class connect_NotionDB:
         return  pd.DataFrame(Notion.clean_data())
         
         
-    
-# Example (Retrieving Vocab DB in Notion)
-database_id = secret.vocab('databaseId')
-token_key = secret.notion_API("token")
 
-Notion = connect_NotionDB(database_id, token_key)
+Notion = connect_NotionDB('database_id', 'token_key')
 data = Notion.retrieve_data()
