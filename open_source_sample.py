@@ -74,7 +74,7 @@ class connect_NotionDB:
         # Find the index with the maximum length
         self.max_ind = np.argmax(most_properties)
         self.titles = list(self.json["results"][self.max_ind]["properties"].keys())
-        return self.titles        
+        return self.titles + ['pageId'] # separately add pageId 
         
         
     def clean_data(self):
@@ -86,14 +86,17 @@ class connect_NotionDB:
             title_type = self.json['results'][self.max_ind]['properties'][title]['type']
             
             temp = []
+            page_id = []
             for i in range(len(self.json['results'])):
                 try:
                     val = self.json['results'][i]['properties'][title][title_type]
                     val = np.nan if val == [] else val
                     temp.append(val)
+                    page_id.append(self.json['results'][i]['id'])
                 except:
                     temp.append(np.nan)
             data[title] = temp
+            data['pageId'] = page_id
         
         
         
