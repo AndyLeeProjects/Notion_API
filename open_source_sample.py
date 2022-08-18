@@ -2,17 +2,13 @@
 """
 Created on Wed Aug 10 14:02:35 2022
 
-@author: anddy
+@author: Andy
 """
 
 import requests
-import sys
 import numpy as np
-import os
 from datetime import datetime
-from secret import secret
 import pandas as pd
-import mysql.connector as MC
 import json
 
 
@@ -38,8 +34,10 @@ get_projects_titles:
 
 clean_data & extract_nested_elements: 
             Organizes JSON data into a cleaner dictionary. 
-            However, since each varialbe has varying number of nested objects, the next method
-            (extract_nested_elements) will further organize the data.
+            However, each varialbe has varying number of nested objects. 
+            In other words, we need different line of code to access different types of elements.
+            So extract_nested_elements function generates different codes to help complete the 
+            cleaning process. 
 
 
 retrieve_data:
@@ -179,6 +177,17 @@ class connect_NotionDB:
         return self.data
 
     def extract_nested_elements(data, key, ind):
+        """Even after cleaning the data, JSON type elements will still exist. 
+           Thus, this function provides nested_type, which will allow complete access to all elements.
+
+        Args:
+            data (dictionary): cleaned data
+            key (str): title name
+            ind (int): index of the passed element
+
+        Returns:
+            nested_type: provides the nested_type
+        """
         try:
             nested_type = data[key][ind][0]['text']['content']
             return nested_type
@@ -224,7 +233,8 @@ class connect_NotionDB:
         titles = Notion.get_projects_titles()
         return  pd.DataFrame(Notion.clean_data())
         
-        
 
-Notion = connect_NotionDB('database_id', 'token_key')
+Notion = connect_NotionDB('databaseId', 'token_key')
 data = Notion.retrieve_data()
+
+
