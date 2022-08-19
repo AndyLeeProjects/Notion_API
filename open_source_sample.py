@@ -12,7 +12,7 @@ import pandas as pd
 import json
 
 
-""" connect_NotionDB 
+""" ConnectNotionDB 
 
 __init__: 
             Basic setup using database_id & token_key
@@ -48,7 +48,7 @@ retrieve_data:
 
 
 
-class connect_NotionDB:
+class ConnectNotionDB:
     def __init__(self, database_id, token_key):
         """Initial Setup
 
@@ -171,7 +171,7 @@ class connect_NotionDB:
         for key in self.data.keys():
             row_num = len(self.data[key])
             
-            self.data[key] = [connect_NotionDB.extract_nested_elements(self.data, key, ind) 
+            self.data[key] = [ConnectNotionDB.extract_nested_elements(self.data, key, ind) 
                          for ind in range(row_num)]
             
         return self.data
@@ -227,14 +227,18 @@ class connect_NotionDB:
 
     
     def retrieve_data(self):
-        Notion = connect_NotionDB(self.database_id, self.token_key)
-        jsn = Notion.query_databases()
-        jsn_all = Notion.get_all_pages()
-        titles = Notion.get_projects_titles()
-        return  pd.DataFrame(Notion.clean_data())
+        """Retrieves data from the designated database in Notion by running all methods above.
+
+        Returns:
+            pandas dataframe: Default return option
+        """
+        jsn = self.query_databases()
+        jsn_all = self.get_all_pages()
+        titles = self.get_projects_titles()
+        return  pd.DataFrame(self.clean_data())
         
 
-Notion = connect_NotionDB('databaseId', 'token_key')
+Notion = ConnectNotionDB('databaseId', 'token_key')
 data = Notion.retrieve_data()
 
 
