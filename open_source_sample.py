@@ -10,6 +10,7 @@ import numpy as np
 from datetime import datetime
 import pandas as pd
 import json
+import time
 
 
 """ ConnectNotionDB 
@@ -94,21 +95,22 @@ class ConnectNotionDB:
         """
         readUrl = f"https://api.notion.com/v1/databases/{self.database_id}/query"
         next_cur = self.json['next_cursor']
+        
+        page_num = 1
         try:
-            page_num = 1
             while self.json['has_more']:
-                print(f"reading page number {page_num}...")
+                print(f"reading database page {page_num}...")
                 print()
                 
-                # Sets a new starting point 
+                # Sets a new starting point
                 self.json['start_cursor'] = next_cur
-                self.json['next_cursor'] = None
                 data_hidden = json.dumps(self.json)
 
                 # Gets the next 100 results
+                payload = {"page_size": 100}
                 data_hidden = requests.post(
-                    readUrl, headers=self.headers, data=data_hidden).json()
-                
+                    readUrl, json = payload, headers=self.headers, data=data_hidden).json()
+
                 self.json["results"] += data_hidden["results"]
                 next_cur = data_hidden['next_cursor']
                 page_num += 1
@@ -237,8 +239,6 @@ class ConnectNotionDB:
         titles = self.get_projects_titles()
         return  pd.DataFrame(self.clean_data())
         
-
-Notion = ConnectNotionDB('databaseId', 'token_key')
+        
+Notion = ConnectNotionDB('database_id', 'token key')
 data = Notion.retrieve_data()
-
-
