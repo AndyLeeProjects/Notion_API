@@ -239,6 +239,3 @@ class ConnectNotionDB:
         titles = self.get_projects_titles()
         return  pd.DataFrame(self.clean_data())
         
-        
-Notion = ConnectNotionDB('database_id', 'token key')
-data = Notion.retrieve_data()
