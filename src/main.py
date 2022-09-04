@@ -267,10 +267,3 @@ class ConnectNotionDB:
             df = pd.DataFrame(self.clean_data())
             df["Index"] = range(0, len(df))
             return df
-
-
-database_id = "b8844373ea4240929bac6e3d6044cb89"
-token_key = "secret_WCXYCVzuU52uLqAdYvJZRtpnd3UD4vR1c85iPFr0n55"
-Notion = ConnectNotionDB(database_id, token_key)
-data = Notion.retrieve_data("dataframe")
-
