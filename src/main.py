@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Aug 10 14:02:35 2022
-
-@author: Andy
-"""
 
 import requests
 import numpy as np
@@ -60,7 +55,7 @@ class ConnectNotionDB:
         """
         self.database_id = database_id
         self.token_key = token_key
-        self.headers = headers = {
+        self.headers = {
             "Accept": "application/json",
             "Notion-Version": "2021-05-13",
             "Content-Type": "application/json",
@@ -84,10 +79,10 @@ class ConnectNotionDB:
         Returns:
             JSON data 
         """
-        database_url = 'https://api.notion.com/v1/databases/' + self.database_id + "/query"
+        database_url = "https://api.notion.com/v1/databases/" + self.database_id + "/query"
         response = requests.post(database_url, json=self.filters, headers=self.headers)
         if response.status_code != 200:
-            raise ValueError(f'Response Status: {response.status_code}')
+            raise ValueError(f"Response Status: {response.status_code}")
         else:
             self.json = response.json()
         return self.json
@@ -103,23 +98,23 @@ class ConnectNotionDB:
             _type_: _description_
         """
         readUrl = f"https://api.notion.com/v1/databases/{self.database_id}/query"
-        next_cur = self.json['next_cursor']
+        next_cur = self.json["next_cursor"]
         
         page_num = 1
         try:
-            while self.json['has_more']:
+            while self.json["has_more"]:
                 print(f"reading database page {page_num}...")
                 print()
                 
                 # Sets a new starting point
-                self.json['start_cursor'] = next_cur
+                self.json["start_cursor"] = next_cur
                 data_hidden = json.dumps(self.json)
 
                 data_hidden = requests.post(
                     readUrl, json=self.filters, headers=self.headers, data=data_hidden).json()
 
                 self.json["results"] += data_hidden["results"]
-                next_cur = data_hidden['next_cursor']
+                next_cur = data_hidden["next_cursor"]
                 page_num += 1
                 if next_cur is None:
                     break
@@ -142,13 +137,13 @@ class ConnectNotionDB:
         Returns:
             list: title or column names of the database
         """
-        most_properties = [len(self.json['results'][i]['properties'])
+        most_properties = [len(self.json["results"][i]["properties"])
                                 for i in range(len(self.json["results"]))]
         
         # Find the index with the maximum length
         self.max_ind = np.argmax(most_properties)
         self.titles = list(self.json["results"][self.max_ind]["properties"].keys())
-        return self.titles + ['pageId'] # separately add pageId 
+        return self.titles + ["pageId"] # separately add pageId 
         
         
     def clean_data(self):
@@ -164,19 +159,19 @@ class ConnectNotionDB:
         for title in self.titles:
             
             # Get the type of the variable and use it as a filtering tool
-            title_type = self.json['results'][self.max_ind]['properties'][title]['type']
+            title_type = self.json["results"][self.max_ind]["properties"][title]["type"]
             temp = []
             page_id = []
-            for i in range(len(self.json['results'])):
+            for i in range(len(self.json["results"])):
                 try:
-                    val = self.json['results'][i]['properties'][title][title_type]
+                    val = self.json["results"][i]["properties"][title][title_type]
                     val = np.nan if val == [] else val
                     temp.append(val)
-                    page_id.append(self.json['results'][i]['id'])
+                    page_id.append(self.json["results"][i]["id"])
                 except:
                     temp.append(np.nan)
             self.data[title] = temp
-            self.data['pageId'] = page_id
+            self.data["pageId"] = page_id
         
         
         
@@ -205,35 +200,35 @@ class ConnectNotionDB:
         # Multi-select
         try:
             if isinstance(data[key][ind], dict) == True:
-                nested_type = data[key][ind]['name']
+                nested_type = data[key][ind]["name"]
             elif len(data[key][ind]) != 1:
-                nested_type = [data[key][ind][i]['name'] for i in range(len(data[key][ind]))]
+                nested_type = [data[key][ind][i]["name"] for i in range(len(data[key][ind]))]
             else:
-                nested_type = data[key][ind]['name']
+                nested_type = data[key][ind]["name"]
             return nested_type
         except:
             pass
 
         try:
-            nested_type = data[key][ind][0]['text']['content']
+            nested_type = data[key][ind][0]["text"]["content"]
             return nested_type
         except:
             pass
         
         try:
-            nested_type = data[key][ind]['number']
+            nested_type = data[key][ind]["number"]
             return nested_type
         except:
             pass
         
         try:
-            nested_type = data[key][ind][0]['name']
+            nested_type = data[key][ind][0]["name"]
             return nested_type
         except:
             pass
         
         try:
-            nested_type = data[key][ind]['start']
+            nested_type = data[key][ind]["start"]
             return nested_type
         except:
             pass
@@ -244,16 +239,38 @@ class ConnectNotionDB:
         except:
             pass
     
-    def retrieve_data(self):
+    def retrieve_data(self, type:str = "dataframe"):
         """
-        Retrieves data from the designated database in Notion by running all methods above.
+        retrieve_data(): Retrieves data from the designated database in Notion by running all methods above.
+
+        Args:
+            type (str): define in which format data is outputted 
+            - "dataframe"
+            - "json"
+
+        Returns:
+            data in specified type(format) 
+        """
+        """
+        
 
         Returns:
             pandas dataframe: Default return option
         """
+        
         jsn = self.query_databases()
         jsn_all = self.get_all_pages()
+        if type == "json":
+            return jsn_all
         titles = self.get_projects_titles()
-        df = pd.DataFrame(self.clean_data())
-        df['Index'] = range(0, len(df))
-        return df
+        if type == "dataframe":
+            df = pd.DataFrame(self.clean_data())
+            df["Index"] = range(0, len(df))
+            return df
+
+
+database_id = "b8844373ea4240929bac6e3d6044cb89"
+token_key = "secret_WCXYCVzuU52uLqAdYvJZRtpnd3UD4vR1c85iPFr0n55"
+Notion = ConnectNotionDB(database_id, token_key)
+data = Notion.retrieve_data("dataframe")
+
