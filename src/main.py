@@ -2,10 +2,8 @@
 
 import requests
 import numpy as np
-from datetime import datetime
 import pandas as pd
 import json
-import time
 
 """ ConnectNotionDB 
 
