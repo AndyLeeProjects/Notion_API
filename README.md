@@ -1,4 +1,4 @@
-# <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="50" height="50"> Notion_API
+# <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" width="50" height="50"> Notion_API - Python
 
 As I took on more projects using Notion, it only made sense to create a bridge that would allow me and other potential users to use the API easier and faster. Although Notion unofficial API packages already exist for public usage, relying more on the REST API, our open source provides lighter data movement. Also, with more broad input parameters, it offers a faster and wider range of actions within databases.
 
