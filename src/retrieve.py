@@ -248,12 +248,6 @@ class ConnectNotionDB:
         Returns:
             data in specified type(format) 
         """
-        """
-        
-
-        Returns:
-            pandas dataframe: Default return option
-        """
         
         jsn = self.query_databases()
         jsn_all = self.get_all_pages()
