@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import requests, json
+import numpy as np
 
-def update_Notion(name: str, content, pageId: str, headers):
+def update_notion(content:dict, pageId: str, headers):
     """_summary_
 
     Args:
@@ -16,9 +18,10 @@ def update_Notion(name: str, content, pageId: str, headers):
     update_url = f"https://api.notion.com/v1/pages/{pageId}"
 
     update_properties = {
-        "properties": {
-            name: content
-        }}
+        "properties": content
+        }
 
     response = requests.request("PATCH", update_url,
                                 headers=headers, data=json.dumps(update_properties))
+
+
