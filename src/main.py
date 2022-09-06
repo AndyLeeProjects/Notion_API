@@ -36,11 +36,27 @@ class NotionAPI:
         Returns:
             data frame or json: returns the results according ot the specified return_type 
         """
+        if isinstance(filters, dict) == False:
+            raise KeyError("Please provide a json format content. Reference: https://developers.notion.com/reference/property-value-object ")
+        
         Notion = ConnectNotionDB(database_id, self.token_key, filters)
         return Notion.retrieve_data(return_type)
     
     
     def update_element_db(self, content:dict, pageId:str):
+        """
+        update_element_db(): updates a designated element in the database with the provided content & pageId.
+
+        Args:
+            content (json): Reference --> https://developers.notion.com/reference/property-value-object 
+            pageId (str): _description_
+        """
+        if isinstance(content, dict) == False:
+            raise KeyError("Please provide a json format content. Reference: https://developers.notion.com/reference/property-value-object ")
+        elif 'properties' in  content.keys():
+            raise KeyError("Please include json inside the 'properties' layer.")
+        
+        # Update content
         update_Notion(content, pageId, self.headers)
         
 
