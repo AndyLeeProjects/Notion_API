@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import json
 from src.retrieve import ConnectNotionDB
-from src.update import update_Notion
+from src.update import update_notion
 
 class NotionAPI:
     def __init__(self, token_key:str):
@@ -57,7 +57,7 @@ class NotionAPI:
             raise KeyError("Please include json inside the 'properties' layer.")
         
         # Update content
-        update_Notion(content, pageId, self.headers)
+        update_notion(content, pageId, self.headers)
         
 
 
