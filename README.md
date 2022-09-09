@@ -6,8 +6,6 @@ As I took on more projects using Notion, it only made sense to create a bridge t
 
 ## Instructions
 
-<br>
-
 ### 1. Instantiate the API Call
 
 ```python
