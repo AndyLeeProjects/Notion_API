@@ -4,7 +4,11 @@ As I took on more projects using Notion, it only made sense to create a bridge t
 
 <br>
 
-## Instantiate the API Call
+## Instructions
+
+<br>
+
+### 1. Instantiate the API Call
 
 ```python
 token_key = "<Token Key>"
@@ -13,7 +17,7 @@ Notion_API = NotionAPI(token_key)
 
 <br>  
 
-## Call Designated Database
+### 2. Call Designated Database
 
 ```python
 database_id = "<database_id>"
@@ -24,7 +28,7 @@ The default return type for `get_database()` is pandas data frame, but it can al
 
 <br>
 
-## Update an Element in the Database
+### 3. Update an Element in the Database
 
 ```python
 # pageId can be found in the data
