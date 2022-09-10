@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import json
 
-""" ConnectNotionDB 
+""" ConnectNotion 
 
 __init__: 
             Basic setup using database_id & token_key
@@ -40,7 +40,7 @@ retrieve_data:
 """
 
 
-class ConnectNotionDB:
+class ConnectNotion:
     def __init__(self, database_id:str, token_key:str, filters:dict = None):
         """
         Initial Setup
@@ -174,8 +174,8 @@ class ConnectNotionDB:
         
         for key in self.data.keys():
             row_num = len(self.data[key])
-            
-            self.data[key] = [ConnectNotionDB.extract_nested_elements(self.data, key, ind) 
+
+            self.data[key] = [ConnectNotion.extract_nested_elements(self.data, key, ind) 
                          for ind in range(row_num)]
             
         return self.data
@@ -205,7 +205,17 @@ class ConnectNotionDB:
             return nested_type
         except:
             pass
-
+        
+        try:
+            nested_type = data[key][ind][0]["name"]
+            # In the case for type external url
+            if data[key][ind][0]['type'] == 'external' and 'http' in data[key][ind][0]['external']['url']:
+                return data[key][ind][0]['external']['url']
+            else:
+                return nested_type
+        except:
+            pass
+        
         try:
             nested_type = data[key][ind][0]["text"]["content"]
             return nested_type
@@ -214,12 +224,6 @@ class ConnectNotionDB:
         
         try:
             nested_type = data[key][ind]["number"]
-            return nested_type
-        except:
-            pass
-        
-        try:
-            nested_type = data[key][ind][0]["name"]
             return nested_type
         except:
             pass
