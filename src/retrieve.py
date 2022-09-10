@@ -60,7 +60,7 @@ class ConnectNotion:
         }
 
         if filters != None:
-            self.filters = filters
+            self.filters = {"filter": filters}
         else:
             self.filters = None
 
