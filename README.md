@@ -10,7 +10,7 @@ As I took on more projects using Notion, it only made sense to create a bridge t
 
 ```python
 token_key = "<Token Key>"
-Notion_API = NotionAPI(token_key) # Class NotionAPI can be found in main.py
+Notion_API = NotionAPI(token_key) # Class NotionAPI can be found in src/main.py
 ```
 
 <br>  
