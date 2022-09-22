@@ -4,8 +4,8 @@ import requests, os
 import numpy as np
 import pandas as pd
 import json
-from src.retrieve import ConnectNotionDB
-from src.update import update_notion
+from retrieve import ConnectNotion
+from update import update_notion
 
 class NotionAPI:
     def __init__(self, token_key:str):
@@ -36,10 +36,10 @@ class NotionAPI:
         Returns:
             data frame or json: returns the results according ot the specified return_type 
         """
-        if isinstance(filters, dict) == False:
+        if isinstance(filters, dict) == False and filters != None:
             raise KeyError("Please provide a json format content. Reference: https://developers.notion.com/reference/property-value-object ")
         
-        Notion = ConnectNotionDB(database_id, self.token_key, filters)
+        Notion = ConnectNotion(database_id, self.token_key, filters)
         return Notion.retrieve_data(return_type)
     
     
@@ -61,5 +61,7 @@ class NotionAPI:
         
 
 
-Notion = NotionAPI()
-data = Notion
+Notion = NotionAPI("secret_WCXYCVzuU52uLqAdYvJZRtpnd3UD4vR1c85iPFr0n55")
+data = Notion.get_database("b550f45159a9473fbe21e570293f11db", return_type="json")
+for key in data.keys():
+    print(data["results"][0])
