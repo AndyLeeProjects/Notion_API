@@ -61,4 +61,5 @@ class NotionAPI:
         
 
 
-        
+Notion = NotionAPI()
+data = Notion
