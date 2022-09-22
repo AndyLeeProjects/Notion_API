@@ -194,6 +194,16 @@ class ConnectNotion:
             nested_type: provides the nested_type
         """
         
+        try:
+            nested_type = data[key][ind][0]["name"]
+            # In the case for type external url
+            if data[key][ind][0]['type'] == 'external' and 'http' in data[key][ind][0]['external']['url']:
+                return data[key][ind][0]['external']['url']
+            else:
+                return nested_type
+        except:
+            pass
+        
         # Multi-select
         try:
             if isinstance(data[key][ind], dict) == True:
@@ -205,17 +215,7 @@ class ConnectNotion:
             return nested_type
         except:
             pass
-        
-        try:
-            nested_type = data[key][ind][0]["name"]
-            # In the case for type external url
-            if data[key][ind][0]['type'] == 'external' and 'http' in data[key][ind][0]['external']['url']:
-                return data[key][ind][0]['external']['url']
-            else:
-                return nested_type
-        except:
-            pass
-        
+                
         try:
             nested_type = data[key][ind][0]["text"]["content"]
             return nested_type
