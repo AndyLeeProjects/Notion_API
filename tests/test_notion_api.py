@@ -18,7 +18,7 @@ def test_get_database(mock_connect, notion_api):
     result = notion_api.get_database(database_id="fake_id")
 
     # Assertions
-    mock_connect.assert_called_with(database_id="fake_id", token_key="fake_token", filters=None, user_db=False)
+    mock_connect.assert_called_with(database_id="fake_id", token_key="fake_token", filters=None)
     mock_instance.retrieve_data.assert_called_with("dataframe")
     assert result == "mocked data"
 
