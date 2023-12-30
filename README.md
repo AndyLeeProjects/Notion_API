@@ -53,3 +53,4 @@ content = {"Recorded At": {"date": {"start": date_time}}}
 # Add a new row to the specified database with the value in the "Recorded At" column
 Notion_API.add_element_db(content, database_id)
 ```
+Also refer to the [Notion API Reference Guide](https://developers.notion.com/reference/property-value-object) for correct formatting of the `content` parameter.
