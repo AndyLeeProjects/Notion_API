@@ -8,7 +8,7 @@ from main import NotionAPI
 def notion_api():
     return NotionAPI(token_key="fake_token")
 
-@patch('your_project.notion_api.ConnectNotion')
+@patch('retrieve.ConnectNotion')
 def test_get_database(mock_connect, notion_api):
     # Set up the mock
     mock_instance = mock_connect.return_value
@@ -22,7 +22,7 @@ def test_get_database(mock_connect, notion_api):
     mock_instance.retrieve_data.assert_called_with("dataframe")
     assert result == "mocked data"
 
-@patch('your_project.notion_api.update_notion')
+@patch('update.update_notion')
 def test_update_element_db(mock_update, notion_api):
     # Set up test data
     content = {"some": "data"}
@@ -34,7 +34,7 @@ def test_update_element_db(mock_update, notion_api):
     # Assertions
     mock_update.assert_called_with(content, pageId, notion_api.headers)
 
-@patch('your_project.notion_api.add_new_row_to_notion_database')
+@patch('update.notion_api.add_new_row_to_notion_database')
 def test_add_element_db(mock_add_new, notion_api):
     # Set up test data
     content = {"other": "data"}
