@@ -1,5 +1,5 @@
-from utils.notion.retrieve import ConnectNotion
-from utils.notion.update import update_notion, add_new_row_to_notion_database
+from retrieve import ConnectNotion
+from update import update_notion, add_new_row_to_notion_database
 
 
 class NotionAPI:
