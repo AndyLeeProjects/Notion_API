@@ -24,15 +24,15 @@ def test_get_database(mock_connect, notion_api):
 
 @patch('update.update_notion')
 def test_update_element_db(mock_update, notion_api):
-    # Set up test data
+    # Prepare test data
     content = {"some": "data"}
     pageId = "fake_pageId"
 
-    # Call the method
+    # Execute the method under test
     notion_api.update_element_db(content, pageId)
 
-    # Assertions
-    mock_update.assert_called_with(content, pageId, notion_api.headers)
+    # Assert that the mock was called correctly
+    mock_update.assert_called_once_with(content, pageId, notion_api.headers)
 
 @patch('update.add_new_row_to_notion_database')
 def test_add_element_db(mock_add_new, notion_api):
