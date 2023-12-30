@@ -10,11 +10,11 @@ def notion_api():
 
 @patch('retrieve.ConnectNotion')
 def test_get_database(mock_connect, notion_api):
-    # Set up the mock
+    # Setup the mock
     mock_instance = mock_connect.return_value
     mock_instance.retrieve_data.return_value = "mocked data"
 
-    # Call the method
+    # Execute the method under test
     result = notion_api.get_database(database_id="fake_id")
 
     # Assertions
