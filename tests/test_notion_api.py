@@ -34,7 +34,7 @@ def test_update_element_db(mock_update, notion_api):
     # Assertions
     mock_update.assert_called_with(content, pageId, notion_api.headers)
 
-@patch('update.notion_api.add_new_row_to_notion_database')
+@patch('update.add_new_row_to_notion_database')
 def test_add_element_db(mock_add_new, notion_api):
     # Set up test data
     content = {"other": "data"}
