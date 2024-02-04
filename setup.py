@@ -5,7 +5,10 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=[
-        # list your package dependencies here
+        "numpy=1.25.2",
+        "pandas=1.5.3"
     ],
-    # other metadata like author, description, etc.
+    author="Andy Lee",
+    author_email="anddy0622@gmail.com",
+    description="Please see https://github.com/AndyLeeProjects/Notion_API",
 )

@@ -1,0 +1,30 @@
+{
+  "name": "notion_api",
+  "version": "1.0.0",
+  "description": "Easy-to-use Notion API SDK",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndyLeeProjects/Notion_API.git#2-call-designated-database"
+  },
+  "keywords": [
+    "api",
+    "easy",
+    "notion"
+  ],
+  "author": "Andy Lee",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/AndyLeeProjects/Notion_API/issues"
+  },
+  "homepage": "https://github.com/AndyLeeProjects/Notion_API/tree/2-call-designated-database#readme",
+  "publishConfig": {
+    "andyleeproject:registry": "https://npm.pkg.github.com"
+  }
+}
